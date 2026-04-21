@@ -1,0 +1,20 @@
+slip_odom_node:
+  ros__parameters:
+    wheel_base: 0.3
+    wheel_radius: 0.05
+    encoder_mode: "A"
+    window_size: 20
+    imu_bias_calib_seconds: 3.0
+    publish_tf: true
+    use_sigmoid_params_fixed: true
+    sigmoid_s0: 0.175
+    sigmoid_k: 8.79
+
+experiment_runner:
+  ros__parameters:
+    mode: "figure8"
+    duration: 30.0
+    v: 0.3
+    w: 0.8
+    repeat: 1
+    stop_at_end: true
