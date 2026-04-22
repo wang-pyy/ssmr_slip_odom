@@ -23,6 +23,34 @@ def generate_launch_description():
             default_value='false',
             description='Whether to launch the experiment_runner node',
         ),
+        DeclareLaunchArgument(
+            'run_base',
+            default_value='true',
+            description='Whether to launch the Yahboom base driver node',
+        ),
+        DeclareLaunchArgument(
+            'run_imu',
+            default_value='true',
+            description='Whether to launch the BNO055 IMU node',
+        ),
+
+        Node(
+            package='ssmr_slip_odom',
+            executable='yahboom_base_node',
+            name='yahboom_base_node',
+            output='screen',
+            parameters=[LaunchConfiguration('params_file')],
+            condition=IfCondition(LaunchConfiguration('run_base')),
+        ),
+
+        Node(
+            package='ssmr_slip_odom',
+            executable='bno055_node',
+            name='bno055_node',
+            output='screen',
+            parameters=[LaunchConfiguration('params_file')],
+            condition=IfCondition(LaunchConfiguration('run_imu')),
+        ),
 
         Node(
             package='ssmr_slip_odom',

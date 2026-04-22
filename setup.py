@@ -15,7 +15,7 @@ setup(
         (os.path.join('share', package_name, 'config'), glob('config/*.yaml')),
         (os.path.join('share', package_name, 'scripts'), glob('scripts/*.sh')),
     ],
-    install_requires=['setuptools'],
+    install_requires=['setuptools', 'pyserial', 'smbus2'],
     zip_safe=True,
     maintainer='dev',
     maintainer_email='dev@todo.todo',
@@ -25,6 +25,8 @@ setup(
         'console_scripts': [
             'slip_odom_node = ssmr_slip_odom.slip_odom_node:main',
             'experiment_runner = ssmr_slip_odom.experiment_runner:main',
+            'yahboom_base_node = ssmr_slip_odom.yahboom_base_node:main',
+            'bno055_node = ssmr_slip_odom.bno055_node:main',
         ],
     },
 )
