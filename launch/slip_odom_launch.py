@@ -33,6 +33,15 @@ def generate_launch_description():
             default_value='true',
             description='Whether to launch the BNO055 IMU node',
         ),
+        DeclareLaunchArgument(
+            'run_slip_odom',
+            default_value='true',
+            description=(
+                'Whether to launch slip_odom_node here. '
+                'Set to false when slam_bringup.launch.py already starts it, '
+                'to avoid two slip_odom_node instances and TF conflicts.'
+            ),
+        ),
 
         Node(
             package='ssmr_slip_odom',
@@ -58,6 +67,7 @@ def generate_launch_description():
             name='slip_odom_node',
             output='screen',
             parameters=[LaunchConfiguration('params_file')],
+            condition=IfCondition(LaunchConfiguration('run_slip_odom')),
         ),
 
         Node(

@@ -1,0 +1,46 @@
+slip_odom_node:
+  ros__parameters:
+    # ----------------------------------------------------------------
+    # Geometry
+    # ----------------------------------------------------------------
+    wheel_base: 0.13
+    wheel_radius: 0.0225
+    encoder_mode: "A"
+    imu_bias_calib_seconds: 3.0
+    publish_tf: true
+
+    # ----------------------------------------------------------------
+    # Sigmoid slip weighting
+    # ----------------------------------------------------------------
+    sigmoid_s0: 0.25
+    sigmoid_k: 12.0
+
+    # ----------------------------------------------------------------
+    # Yaw / slip clamps and deadbands
+    # ----------------------------------------------------------------
+    encoder_yaw_scale: 1.0
+    lambda_min: 0.05
+    lambda_max: 0.90
+    slip_deadband: 0.04
+    w_deadband: 0.015
+    alpha_up: 0.10
+    alpha_down: 0.25
+
+    # ----------------------------------------------------------------
+    # Nonlinear longitudinal velocity correction
+    # v_eff = v_enc * exp(-s_bar^2/(2*sigma_s^2)) * max(0, 1 - gamma*|w_imu|)
+    # ----------------------------------------------------------------
+    use_nonlinear_velocity_correction: true
+    slip_sigma_s: 0.35
+    turn_gamma: 0.20
+
+    # ----------------------------------------------------------------
+    # ICR / effective track width online estimation
+    # ----------------------------------------------------------------
+    use_icr_beff: true
+    beff_alpha: 0.08
+    beff_min: 0.10
+    beff_max: 0.80
+    beff_init: 0.13
+    beff_update_w_min: 0.05
+    beff_update_dv_min: 0.01

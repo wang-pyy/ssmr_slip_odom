@@ -3,7 +3,7 @@
 <package format="3">
   <name>ssmr_slip_odom</name>
   <version>0.1.0</version>
-  <description>Slip-aware odometry for skid-steer mobile robots using IMU-encoder fusion</description>
+  <description>Slip-aware odometry for skid-steer mobile robots using IMU-encoder fusion, plus slam_toolbox integration for 2D SLAM.</description>
   <maintainer email="dev@todo.todo">dev</maintainer>
   <license>MIT</license>
 
@@ -16,6 +16,13 @@
   <exec_depend>geometry_msgs</exec_depend>
   <exec_depend>nav_msgs</exec_depend>
   <exec_depend>tf2_ros</exec_depend>
+
+  <exec_depend>launch</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
+
+  <exec_depend>slam_toolbox</exec_depend>
+  <exec_depend>rplidar_ros</exec_depend>
+  <exec_depend>rviz2</exec_depend>
 
   <export>
     <build_type>ament_python</build_type>

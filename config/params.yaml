@@ -1,45 +1,114 @@
 slip_odom_node:
   ros__parameters:
-    wheel_base: 0.23
-    wheel_radius: 0.05
+    wheel_base: 0.13
+    wheel_radius: 0.0225
     encoder_mode: "A"
     window_size: 20
-    imu_bias_calib_seconds: 3.0
+    imu_bias_calib_seconds: 5.0
     publish_tf: true
-    use_sigmoid_params_fixed: true
-    sigmoid_s0: 0.175
-    sigmoid_k: 8.79
+
+    use_sigmoid_params_fixed: false
+    sigmoid_s0: 0.10
+    sigmoid_k: 18.0
+
+    encoder_yaw_scale: 0.85
+    lambda_min: 0.05
+    lambda_max: 0.90
+    slip_deadband: 0.025
+    w_deadband: 0.015
+    alpha_up: 0.18
+    alpha_down: 0.30
+
+    linear_slip_gain: 0.0
+
+    use_nonlinear_velocity_correction: true
+    slip_sigma_s: 0.30
+    turn_gamma: 0.22
+
+    use_icr_beff: true
+    beff_alpha: 0.06
+    beff_min: 0.10
+    beff_max: 0.45
+    beff_init: 0.13
+    beff_update_w_min: 0.04
+    beff_update_dv_min: 0.01
 
 yahboom_base_node:
   ros__parameters:
     serial_port: "/dev/ttyUSB0"
     baudrate: 115200
-    wheel_base: 0.23
+    wheel_base: 0.13
     control_frequency: 50.0
     cmd_vel_timeout: 0.5
     max_linear_speed: 0.6
     max_angular_speed: 3.0
-    channel_fl: 1
-    channel_fr: 2
-    channel_rl: 3
-    channel_rr: 4
-    invert_left: false
-    invert_right: false
+
+    channel_fl: 2
+    channel_fr: 4
+    channel_rl: 1
+    channel_rr: 3
+    invert_left: true
+    invert_right: true
+
     publish_feedback: true
     apply_board_config: false
     motor_type: 0
     deadzone: 0
     encoder_lines: 0
     motor_phase: 0
-    wheel_diameter_mm: 100
+    wheel_diameter_mm: 45
     upload_mall: 0
     upload_mtep: 1
     upload_mspd: 1
 
+    # ------------------------------------------------------------------
+    # 直行左右轮速度闭环修正
+    # ------------------------------------------------------------------
+    straight_balance_enable: true
+    straight_balance_kp: 0.5
+    straight_balance_deadband: 0.005
+    straight_balance_max_correction: 0.08
+    straight_balance_linear_min: 0.03
+    straight_balance_angular_threshold: 0.05
+    feedback_timeout: 0.25
+
+    # ------------------------------------------------------------------
+    # 静态左右微调，默认都保持 1.0
+    # 仅当“从静止直接直行”也稳定一边快时再微调
+    # 不要让 trim 替代反馈闭环
+    # ------------------------------------------------------------------
+    left_trim: 1.0
+    right_trim: 1.0
+
+    # ------------------------------------------------------------------
+    # 强制停车：连续多次发送 spd:0,0,0,0
+    # 避免驱动板内部 PID 残留目标导致一侧轮子继续小幅度转动
+    # ------------------------------------------------------------------
+    stop_burst_count: 8
+    stop_burst_interval: 0.02
+
+    # ------------------------------------------------------------------
+    # 转弯 -> 直行 过渡保护
+    # 检测到由明显转弯切换到直行时，先发送一段时间 0 速度，
+    # 等底盘 / 驱动板 PID 归零，然后再下发新的直行命令
+    # ------------------------------------------------------------------
+    turn_to_straight_settle_enable: true
+    turn_to_straight_settle_time: 0.3
+    turn_detect_threshold: 0.1
+
+wasd_teleop_node:
+  ros__parameters:
+    linear_speed: 0.20
+    angular_speed: 1.20
+    publish_rate: 20.0
+    # 注意：不要小于 0.20s，否则按住 w 时会出现
+    # "前进-停车-前进-停车" 的抖动
+    key_timeout: 0.40
+
 bno055_node:
   ros__parameters:
     i2c_bus: "/dev/i2c-1"
-    i2c_address: 40
+    i2c_address: 41
     frame_id: "imu_link"
     publish_frequency: 50.0
     operation_mode: 12
@@ -51,7 +120,7 @@ experiment_runner:
   ros__parameters:
     mode: "figure8"
     duration: 30.0
-    v: 0.3
-    w: 0.8
+    v: 0.08
+    w: 0.3
     repeat: 1
     stop_at_end: true
